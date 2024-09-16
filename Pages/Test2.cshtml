@@ -1,0 +1,57 @@
+﻿@page
+@model WebComponentTest1.Pages.Test2Model
+@{
+}
+
+<h3>TestSuiteStatus2</h3>
+<hr />
+
+<partial name="_TestSuiteStatus2" />
+
+<div class="mt-5">
+   <button id="loadTestSuite">Load Test Suite</button>
+   <button id="activateTestCase">Activate Test Case</button>
+   <button id="deactivateTestCase">Deactivate Test Case</button>
+   <button id="updateTestSummary">Update Test Summary</button>
+</div>
+
+@section Scripts {
+   <script>
+      $(function () {
+         const initialTestSuiteState = @Html.Raw(Model.TestSuiteStatusJson);
+         updateTestSuiteStatus(initialTestSuiteState);
+      });
+
+      $('#loadTestSuite').on('click', () => {
+         console.log('click');
+         updateTestSuiteStatus({
+            testSuiteName: 'Test Suite 1',
+            testsTotal: 10,
+            testsPassed: 0,
+            testsFailed: 0,
+            testsNotRun: 10
+         });
+      })
+
+      $('#activateTestCase').on('click', () => {
+         updateTestSuiteStatus({ activeTestCase: 'Test Case 1', testCaseId: 4 });
+      })
+
+      $('#deactivateTestCase').on('click', () => {
+         updateTestSuiteStatus({ activeTestCase: '' });
+      })
+
+      $('#updateTestSummary').on('click', () => {
+         const passed = getRandom(), failed = getRandom(), notRun = getRandom();
+         const total = passed + failed + notRun;
+         updateTestSuiteStatus({ testsPassed: passed, testsFailed: failed, testsNotRun: notRun, testsTotal: total });
+      })
+
+      function getRandom() {
+         return Math.floor(Math.random() * 10) + 1;
+      }
+
+   </script>
+}
+
+

@@ -1,0 +1,99 @@
+﻿@using WebComponentTest1.Common
+
+<div id="testSuiteSummaryRoot">
+
+   <div class="d-flex">
+      <h3 class="me-auto">Test Suite</h3>
+
+      <div class="no-test-suite-loaded" style="display: none;">
+         <a href="">Load</a>
+      </div>
+
+      <div class="test-suite-loaded" style="display: none;">
+         <a href="">View</a> |
+         <a href="">Update</a>
+      </div>
+   </div>
+
+   <span class="no-test-suite-loaded d-none">No Test Suite loaded</span>
+
+   <dl class="row test-suite-loaded" style="display: none;">
+
+      <dt class="col-sm-2">
+         Name
+      </dt>
+      <dd class="col-sm-10">
+         <span id="testSuiteName"></span>
+      </dd>
+
+      <dt class="col-sm-2">
+         Summary
+      </dt>
+      <dd class="col-sm-10">
+         <span id="testsTotal"></span>
+         <span id="testsPassed" class="text-success"></span>
+         <span id="testsFailed" class="text-danger"></span>
+         <span id="testsNotRun" class="text-secondary"></span>
+      </dd>
+
+      <dt class="col-sm-2">
+         Active Test Case
+      </dt>
+      <dd class="col-sm-10">
+         <span id="noActiveTestCase" class="text-secondary">No Active Test case</span>
+         <a id="activeTestCase" style="display: none;" href="">Blah blah</a>
+      </dd>
+
+   </dl>
+</div>
+
+
+@Html.Script(
+   @<script>
+      // Perform all element queries from the component parent to avoid querying the entire page.
+      const root = $('#testSuiteSummaryRoot');
+
+      window.updateTestSuiteStatus = newStatus => {
+         console.log(newStatus);
+
+         processTestSummary(newStatus);
+         processActiveTestCase(newStatus);
+         processTestSuiteName(newStatus);
+      }
+
+      function processTestSummary(newStatus) {
+         if (newStatus.testsTotal != null) {
+            root.find('#testsTotal').text(`Total ${newStatus.testsTotal} - `);
+            root.find('#testsPassed').text(`Passed ${newStatus.testsPassed} `);
+            root.find('#testsFailed').text(`Failed ${newStatus.testsFailed} `);
+            root.find('#testsNotRun').text(`Not Run ${newStatus.testsNotRun} `);
+         }
+      }
+
+      function processActiveTestCase(newStatus) {
+         if (newStatus.activeTestCase != null) {
+            if (newStatus.activeTestCase) {
+               root.find('#noActiveTestCase').hide();
+               root.find('#activeTestCase').text(newStatus.activeTestCase).attr('href', 'someurl').show('normal');
+            } else {
+               root.find('#activeTestCase').hide();
+               root.find('#noActiveTestCase').show('normal');
+            }
+         }
+      }
+
+      function processTestSuiteName(newStatus) {
+         if (newStatus.testSuiteName != null) {
+            if (newStatus.testSuiteName !== '') {
+               root.find('#testSuiteName').text(newStatus.testSuiteName);
+               root.find('.no-test-suite-loaded').hide();
+               root.find('.test-suite-loaded').removeClass('d-none').show('normal');
+            } else {
+               root.find('.no-test-suite-loaded').removeClass('d-none').show();
+            }
+         }
+      }
+
+   </script>
+)
+

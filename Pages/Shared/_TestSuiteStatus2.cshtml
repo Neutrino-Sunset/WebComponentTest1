@@ -1,0 +1,62 @@
+﻿@using WebComponentTest1.Common
+
+<div x-data="{
+      state: {},
+      init() {
+         window.updateTestSuiteStatus = newState => {
+            this.state = { ...this.state, ...newState };
+         }
+      },
+      get testSuiteLoaded() {
+         return !!this.state.testSuiteName;
+      },
+      get testCaseActive() {
+         return !!this.state.activeTestCase;
+      }
+   }">
+
+   <div class="d-flex">
+      <h3 class="me-auto">Test Suite</h3>
+
+      <div x-show="!testSuiteLoaded">
+         <a href="">Load</a>
+      </div>
+
+      <div x-show="testSuiteLoaded" x-transition>
+         <a href="">View</a> |
+         <a href="">Update</a>
+      </div>
+   </div>
+
+   <span x-show="!testSuiteLoaded">No Test Suite loaded</span>
+
+   <dl class="row" x-show="testSuiteLoaded" x-transition>
+
+      <dt class="col-sm-2">
+         Name
+      </dt>
+      <dd class="col-sm-10">
+         <span x-text="state.testSuiteName"></span>
+      </dd>
+
+      <dt class="col-sm-2">
+         Summary
+      </dt>
+      <dd class="col-sm-10">
+         <span x-text="`Total ${state.testsTotal} - `"></span>
+         <span class="text-success" x-text="`Passed ${state.testsPassed} `"></span>
+         <span class="text-danger" x-text="`Failed ${state.testsFailed} `"></span>
+         <span class="text-secondary" x-text="`Not Run ${state.testsNotRun}`"></span>
+      </dd>
+
+      <dt class="col-sm-2">
+         Active Test Case
+      </dt>
+      <dd class="col-sm-10">
+         <span class="text-secondary" x-show="!testCaseActive">No Active Test case</span>
+         <a x-show="testCaseActive" x-transition x-text="state.activeTestCase"
+            x-bind:href="`someurl?testCaseId=${state.testCaseId}`"></a>
+      </dd>
+
+   </dl>
+</div>
